@@ -45,17 +45,19 @@ class Server
   def display_Menu
     loop {
       case Menu.menu_geral
-        when Menu.optionListarOnline
+
+      when @@optionListarOnline
           listarOnline
 
-        when Menu.optionListarSensor
-          listarSensorClient requestID
+        when @@optionListarSensor
+          listarSensorClient( Menu.requestID )
 
-        when Menu.optionSair
+        when @@optionSair
           break
 
         else
           Menu.errorComand
+
       end
 
     }

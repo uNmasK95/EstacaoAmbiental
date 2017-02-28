@@ -8,20 +8,23 @@ module Menu
   @@optionSair = "3"
 
   def Menu.menu_geral
-    puts "--------Menu--------"
+    puts "----------------------------Menu----------------------------"
     puts " #{@@optionListarOnline} - Listars clientes online;"
     puts " #{@@optionListarSensor} - Listar valores lidos de um sensor ( ? - ID );"
     puts " #{@@optionSair} - Sair"
-
+    puts "------------------------------------------------------------"
+    print " => "
     return gets.strip
   end
 
   def Menu.requestID
-    puts "Introduza o ID do cliente: "
+    puts " Introduza o ID do cliente "
+    print " => "
     begin
       id = Integer(gets.strip)
     rescue ArgumentError
-      puts "Introduza um ID valido: "
+      puts " Introduza um ID valido "
+      print " => "
       retry
     end
     return id
