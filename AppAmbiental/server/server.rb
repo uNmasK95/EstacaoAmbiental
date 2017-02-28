@@ -1,33 +1,33 @@
 require 'socket'
+require 'concurrent'
 require_relative 'Menu'
+
 
 class Server
   include Menu
 
   def initialize(port)
     @server = TCPServer.open port
-    @online = Hash.new
+    @online = Concurrent::Hash.new
 
   end
 
   def start()
 
     Thread.new{
-
       loop do
         Thread.start( @server.accept ) do | client |
           #ver como calcular o id
           begin
             worker = ClientWorker.new(client,id)
-            @online[c.ID] = worker
-            c.receive
+            @online[worker.ID] = worker
+            worker.receive
           rescue IOError
             @online.delete(c.ID)
           end
         end
       end
     }
-
 
     display_Menu
 
@@ -64,7 +64,6 @@ class Server
   end
 
 end
-
 
 
 
