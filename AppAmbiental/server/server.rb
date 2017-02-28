@@ -20,8 +20,7 @@ class Server
         end
 
       end
-    }
-
+    }.join
   end
 
 end
