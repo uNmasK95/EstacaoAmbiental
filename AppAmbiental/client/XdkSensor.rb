@@ -6,7 +6,7 @@ module XdkSensor
   end
 
   def getTemperatura
-    if rand(0..1) then
+    if [true,false].sample then
       @temperatura += rand(0..0.5)
     else
       @temperatura -= rand(0..0.5)
@@ -14,7 +14,7 @@ module XdkSensor
   end
 
   def getRuido
-    if(rand(0..1)) then
+    if [true,false].sample then
       @ruido += rand(1.0..10.0)
     else
       @ruido -= rand(1.0..10.0)

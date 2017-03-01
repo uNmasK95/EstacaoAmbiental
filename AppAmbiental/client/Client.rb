@@ -15,24 +15,21 @@ class Client
 
   def start
 
-    socket = TCPSocket.open(@hostname, @port)
+    socket = TCPSocket.open(@hostname, @port, @id)
 
     # Thread Ruido  Colocar uma Thread para o ruido com => valor;Timestamp;gps;
-    #Thread.new{
-     # loop do
-        #puts"#{self.getTemperatura}"
-      #  puts("Ruido\n")
-      #  sleep(1)
-      #end
-   # }
+    Thread.new{
+      loop do
+        puts"#{getRuido};#{Time.now.to_i};#{@latitude}:#{@longitude};"
+        sleep(1)
+      end
+    }
 
     # Thread Temperatura   Colocar uma Thread para a Temperatura com => valor;Timestamp;gps;
     Thread.new {
       loop do
-        puts"asas #{getTemperatura}"
-        puts("Temperatura\n")
-        #time.now
-        sleep(1)
+        puts"#{getTemperatura};#{Time.now.to_i};#{@latitude}:#{@longitude};"
+        sleep(30)
       end
     }.join
 
