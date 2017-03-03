@@ -94,16 +94,3 @@ class LeiturasDAO
   end
 
 end
-
-
-
-#d = LeiturasDAO.new
-#d.insert(2,"ruido",5.2,Time.now.to_i, 58.1, -200)
-
-#d.getAllById(2).each { |e| puts e  }
-
-#a,b = d.getLastLocationById(2)
-#puts a,b
-
-
-#puts d.countByCon(2,1488555126)
