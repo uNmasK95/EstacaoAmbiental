@@ -14,14 +14,14 @@ module Menu
     puts " #{@@optionSair} - Sair"
     puts "------------------------------------------------------------"
     print " => "
-    return gets.strip
+    return $stdin.gets.strip
   end
 
   def Menu.requestID
     puts " Introduza o ID do cliente "
     print " => "
     begin
-      id = Integer(gets.strip)
+      id = Integer($stdin.gets.strip)
     rescue ArgumentError
       puts " Introduza um ID valido "
       print " => "
@@ -33,6 +33,23 @@ module Menu
 
   def Menu.errorComand
     puts "Comando nao existe"
+  end
+
+
+  def Menu.displayAllOnline( list )
+    list.each { |item|
+      puts "ID: #{item[:id]}; GPS: #{item[:gps][:lat]}º\t#{item[:gps][:lon]}"
+    }
+  end
+
+  def Menu.displayLeiturasSensor( list )
+    list.each { |item|
+      puts "ID: #{item[:id]};\tType: #{item[:type]};\tValue: #{item[:value]};\tTimestamp: #{item[:timestamp]};\tGPS: #{item[:gps][:lat]}º #{item[:gps][:lon]}"
+    }
+  end
+
+  def Menu.display_for_page( list, n)
+
   end
 
 end

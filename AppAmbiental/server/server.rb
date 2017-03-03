@@ -1,6 +1,7 @@
 require 'socket'
-require 'concurrent'
-require_relative 'Menu'
+require_relative 'menu'
+require_relative '../server/leituras_dao.rb'
+require_relative '../server/users_dao.rb'
 
 
 class Server
@@ -8,8 +9,8 @@ class Server
 
   def initialize(port)
     @server = TCPServer.open port
-    @online = Concurrent::Hash.new
-
+    @leituras = LeiturasDAO.new
+    @users = UsersDAO.new
   end
 
   def start()
@@ -17,29 +18,25 @@ class Server
     Thread.new{
       loop do
         Thread.start( @server.accept ) do | client |
-          #ver como calcular o id
           begin
             worker = ClientWorker.new(client,id)
-            @online[worker.ID] = worker
-            worker.receive
+            worker.run
           rescue IOError
-            @online.delete(c.ID)
+            #ver se tenho alguma coisa para apanhar
           end
         end
       end
     }
-
     display_Menu
-
   end
 
 
   def listarOnline
-    puts "ainda vou fazer o listar online"
+    Menu.displayAllOnline( @users.getAllOn )
   end
 
   def listarSensorClient( id )
-    puts "ainda vou fazer o listar sensor"
+    Menu.displayLeiturasSensor( @leituras.getAllById( id ) )
   end
 
   def display_Menu
@@ -57,17 +54,11 @@ class Server
 
         else
           Menu.errorComand
-
       end
-
     }
   end
 
 end
-
-
-
-
 
 s = Server.new 12346
 s.start
