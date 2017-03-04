@@ -5,9 +5,10 @@ class Client
 
   include XdkSensor
 
-  def initialize( hostname, port)
+  def initialize( hostname, port, id)
     @hostname = hostname
     @port = port
+    @id = id
     @latitude = rand(-90.0..90.0)
     @longitude = rand(-180.0..180)
     super()
@@ -16,11 +17,12 @@ class Client
   def start
 
     socket = TCPSocket.open(@hostname, @port, @id)
+    puts socket.gets
 
     # Thread Ruido  Colocar uma Thread para o ruido com => valor;Timestamp;gps;
     Thread.new{
       loop do
-        puts"#{getRuido};#{Time.now.to_i};#{@latitude}:#{@longitude};"
+        socket.puts"#{getRuido};#{Time.now.to_i};#{@latitude}:#{@longitude};"
         sleep(1)
       end
     }
@@ -28,7 +30,7 @@ class Client
     # Thread Temperatura   Colocar uma Thread para a Temperatura com => valor;Timestamp;gps;
     Thread.new {
       loop do
-        puts"#{getTemperatura};#{Time.now.to_i};#{@latitude}:#{@longitude};"
+        socket.puts"#{getTemperatura};#{Time.now.to_i};#{@latitude}:#{@longitude};"
         sleep(30)
       end
     }.join
@@ -36,8 +38,13 @@ class Client
     #O gps tem latitude e longitude exemplo => 99.70:-73.9893;
 
   end
+
 end
 
 
-c = Client.new 'localhost', 12346
+puts "Insira o ID:"
+b = gets.chomp.to_i
+
+c = Client.new 'localhost', 12346, b
+
 c.start
