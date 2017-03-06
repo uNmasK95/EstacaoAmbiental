@@ -5,6 +5,7 @@ require 'users_dao'
 class ClientWorker
 
   def initialize(client)
+    $stdout.puts "iniciar"
     @client = client
     @leituras = LeituraDAO.new
     @users = UsersDAO.new
@@ -12,8 +13,13 @@ class ClientWorker
   end
 
   def handshake
+    puts "ola1"
+
     begin
+      puts "ola"
       id = @client.gets.to_i
+
+      puts "#{id}"
 
       if @users.containsUser(id) then
         @id = id
@@ -59,8 +65,9 @@ class ClientWorker
   end
 
 
-  def run
-    handshake
+  def run()
+    puts "um"
+    handshake()
 
     begin
       receiveData
