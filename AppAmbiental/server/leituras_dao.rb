@@ -27,24 +27,27 @@ class LeiturasDAO
     leitura = {
         :_id => {
             :id => sensorID,
-            :timestamp => timestamp
+            :timestamp => timestamp,
+            :type => sensorType
         },
-        :type => sensorType,
         :value => value,
         :gps => {
             :lat => gps_lat,
             :lon => gps_lon
         }
     }
-
+    #@db = Mongo::Client.new(['127.0.0.1:27017'] , :database => 'xdkAmbiente' )
     @db[:leituras].insert_one(leitura)
+    #@db.close
   end
 
   # Metodo que oferece a funcionalidade de fazer drop da coleção leituras
   #
   # @return [nil]
   def drop
+    #@db = Mongo::Client.new(['127.0.0.1:27017'] , :database => 'xdkAmbiente' )
     @db[:leituras].drop
+    #@db.close
   end
 
   # O metodo getAllByID recolhe todas as leituras realizadas
@@ -53,13 +56,13 @@ class LeiturasDAO
   # @return [Type] description of returned object
   def getAllById( id )
     result = Array.new
-
+    #@db = Mongo::Client.new(['127.0.0.1:27017'] , :database => 'xdkAmbiente' )
     @db[:leituras].find( {"_id.id" => id }
     ).each { |leitura|
       result.push(
         {
           :id => leitura["_id"]["id"],
-          :type => leitura["type"],
+          :type => leitura["_id"]["type"],
           :timestamp => leitura["_id"]["timestamp"],
           :value => leitura["value"],
           :gps => {
@@ -69,28 +72,33 @@ class LeiturasDAO
         }
       )
     }
+    #@db.close
     return result
   end
 
 
   def getLastLocationById( id )
       value = nil
+      #@db = Mongo::Client.new(['127.0.0.1:27017'] , :database => 'xdkAmbiente' )
       @db[:leituras].find({"_id.id" => id }).sort({"_id.timestamp" => -1 }).each { |last|
         value = last["gps"]["lat"] , last["gps"]["lon"]
         break
       }
+      #@db.close
       return value
   end
 
 
   def countByCon( id, frist_timestamp)
-
-    return @db[:leituras].find({
+    #@db = Mongo::Client.new(['127.0.0.1:27017'] , :database => 'xdkAmbiente' )
+    value = @db[:leituras].find({
       :$and => [
         { "_id.id" => id },
         { "_id.timestamp" => { :$gte => frist_timestamp}}
       ]
     }).count()
+    #@db.close
+    return value
   end
 
 end

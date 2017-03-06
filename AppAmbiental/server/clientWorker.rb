@@ -1,25 +1,19 @@
 require 'socket'
-require 'leituras_dao'
-require 'users_dao'
+require_relative 'leituras_dao'
+require_relative 'users_dao'
 
 class ClientWorker
 
   def initialize(client)
-    $stdout.puts "iniciar"
     @client = client
-    @leituras = LeituraDAO.new
+    @leituras = LeiturasDAO.new
     @users = UsersDAO.new
 
   end
 
   def handshake
-    puts "ola1"
-
     begin
-      puts "ola"
       id = @client.gets.to_i
-
-      puts "#{id}"
 
       if @users.containsUser(id) then
         @id = id
@@ -31,7 +25,7 @@ class ClientWorker
         @client.puts "#{@id}"
       end
 
-      puts "O client xdk com o id: #{@id} estabeleceu conexao"
+      $stdout.puts "O client xdk com o id: #{@id} estabeleceu conexao"
     rescue IOError
       #TODO ver o que fazer aqui
       #Thread.current[:stop] = true
@@ -40,44 +34,35 @@ class ClientWorker
 
 
   def receiveFristPack
-    line = @client.gets
-    fields = line.split(";")
-
+    fields = @client.gets.strip.split(";")
     @frist_timestamp = fields[2].to_i
-
-    updateSaveData( @id, fields[0], fields[1].to_i, fields[2].to_i, fields[3].to_i, fields[4].to_i )
+    updateSaveData( @id, fields[0], fields[1].to_f, fields[2].to_i, fields[3].to_f, fields[4].to_f )
   end
 
   def receiveData
     receiveFristPack
     loop {
-      line = @client.gets
-      fields = line.split(";")
-
-      updateSaveData( @id, fields[0], fields[1].to_i, fields[2].to_i, fields[3].to_i, fields[4].to_i )
+      fields = @client.gets.strip.split(";")
+      updateSaveData( @id, fields[0], fields[1].to_f, fields[2].to_i, fields[3].to_f, fields[4].to_f )
     }
   end
 
-
   def updateSaveData( id, type, value, timestamp, lat, lon )
+    #puts "#{id};#{type};#{value};#{timestamp};#{lat};#{lon}"
     @leituras.insert( id, type, value, timestamp, lat, lon )
-    @users.updateGPS( @id, fields[3].to_i, fields[4].to_i )
+    @users.updateGPS( id, lat, lon )
   end
-
 
   def run()
-    puts "um"
     handshake()
-
     begin
       receiveData
-    rescue IOError
-      n = @leituras.countByCon( @id, @timestamp )
+    rescue Exception
+      n = @leituras.countByCon( @id, @frist_timestamp )
       @users.updateState( @id, "OFF")
-      puts "O client xdk com o id: #{@id} terminou a sua conexao com o registo de #{n} leituras"
+      $stdout.puts "O client xdk com o id: #{@id} terminou a sua conexao com o registo de #{n} leituras"
     end
   end
-
 
 private :handshake, :receiveFristPack, :receiveData, :updateSaveData
 

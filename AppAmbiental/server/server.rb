@@ -1,8 +1,8 @@
 require 'socket'
 require_relative 'menu'
+require_relative 'clientWorker'
 require_relative '../server/leituras_dao.rb'
 require_relative '../server/users_dao.rb'
-
 
 class Server
   include Menu
@@ -17,13 +17,11 @@ class Server
 
     Thread.new{
       loop do
-        Thread.start( @server.accept ) do | client |
-          begin
-            worker = ClientWorker.new(client,id)
-            worker.run
-          rescue IOError
-            #ver se tenho alguma coisa para apanhar
-          end
+        Thread.start( @server.accept ) do  | client |
+
+          worker = ClientWorker.new( client )
+          worker.run
+
         end
       end
     }
