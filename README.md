@@ -2,17 +2,17 @@
 
 ## Run Server
 ```
-ruby AppAmbiental/server/Server.rb
+ruby AppAmbiental/server/Server.rb $portClient $portTelnet
 ```
 
 ### Server interface
 
 ```
-telnet hostname port
+telnet hostname 8080
 ```
 
 ## Run Client
 
 ```
-ruby AppAmbiental/server/Client.rb
+ruby AppAmbiental/server/Client.rb $ID
 ```
