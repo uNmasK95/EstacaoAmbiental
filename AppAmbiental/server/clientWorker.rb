@@ -48,7 +48,6 @@ class ClientWorker
   end
 
   def updateSaveData( id, type, value, timestamp, lat, lon )
-    #puts "#{id};#{type};#{value};#{timestamp};#{lat};#{lon}"
     @leituras.insert( id, type, value, timestamp, lat, lon )
     @users.updateGPS( id, lat, lon )
   end

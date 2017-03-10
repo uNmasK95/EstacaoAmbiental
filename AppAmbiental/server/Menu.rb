@@ -1,55 +1,81 @@
-module Menu
+class Menu
 
   #Listar os clientes que estão ‘ligados’ e a sua respetiva localização.
   #Listar os valores lidos de um determinado sensor, sendo fornecido como parâmetro um identificador único do cliente.
+  attr_reader :optionListarOnline, :optionListarSensor, :optionSair
 
-  @@optionListarOnline = "1"
-  @@optionListarSensor = "2"
-  @@optionSair = "3"
+  @@optionListarOnline = 1
+  @@optionListarSensor = 2
+  @@optionSair = 3
 
-  def Menu.menu_geral
-    puts "----------------------------Menu----------------------------"
-    puts " #{@@optionListarOnline} - Listars clientes online;"
-    puts " #{@@optionListarSensor} - Listar valores lidos de um sensor ( ? - ID );"
-    puts " #{@@optionSair} - Sair"
-    puts "------------------------------------------------------------"
-    print " => "
-    return $stdin.gets.strip
+  def initialize( input, output)
+    @input = input
+    @output = output
   end
 
-  def Menu.requestID
-    puts " Introduza o ID do cliente "
-    print " => "
+
+  def menu_geral
+    @output.puts "----------------------------Menu----------------------------"
+    @output.puts " #{@@optionListarOnline} - Listars clientes online;"
+    @output.puts " #{@@optionListarSensor} - Listar valores lidos de um sensor ( ? - ID );"
+    @output.puts " #{@@optionSair} - Sair"
+    @output.puts "------------------------------------------------------------"
+    @output.print " => "
+    return @input.gets.strip.to_i
+  end
+
+  def requestID
+    @output.puts " Introduza o ID do cliente "
+    @output.print " => "
     begin
-      id = Integer($stdin.gets.strip)
+      id = Integer(@input.gets.strip)
     rescue ArgumentError
-      puts " Introduza um ID valido "
-      print " => "
+      @output.puts " Introduza um ID valido "
+      @output.print " => "
       retry
     end
     return id
   end
 
 
-  def Menu.errorComand
-    puts "Comando nao existe"
+  def errorComand
+    @output.puts "Comando nao existe"
   end
 
 
-  def Menu.displayAllOnline( list )
+  def displayAllOnline( list )
     list.each { |item|
-      puts "ID: #{item[:id]}; GPS: #{item[:gps][:lat]}º\t#{item[:gps][:lon]}"
+      @output.puts "ID: #{item[:id]}; GPS: #{item[:gps][:lat]}º #{item[:gps][:lon]}º"
     }
   end
 
-  def Menu.displayLeiturasSensor( list )
+  def displayLeiturasSensor( list )
     list.each { |item|
-      puts "ID: #{item[:id]};\tType: #{item[:type]};\tValue: #{item[:value]};\tTimestamp: #{item[:timestamp]};\tGPS: #{item[:gps][:lat]}º #{item[:gps][:lon]}"
+      @output.puts "ID: #{item[:id]}; Type: #{item[:type]}; Value: #{item[:value]}; Timestamp: #{item[:timestamp]}; GPS: #{item[:gps][:lat]}º #{item[:gps][:lon]}º"
     }
   end
 
-  def Menu.display_for_page( list, n)
 
+  def display_Menu( functions )
+    @functions = functions
+
+    loop {
+      case menu_geral
+
+      when @@optionListarOnline
+          displayAllOnline @functions[@@optionListarOnline-1].call
+
+        when @@optionListarSensor
+          displayLeiturasSensor @functions[@@optionListarSensor-1].call( requestID )
+
+        when @@optionSair
+          @output.close
+          break
+
+        else
+          errorComand
+      end
+    }
   end
 
 end

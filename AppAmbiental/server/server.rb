@@ -5,58 +5,49 @@ require_relative '../server/leituras_dao.rb'
 require_relative '../server/users_dao.rb'
 
 class Server
-  include Menu
 
-  def initialize(port)
-    @server = TCPServer.open port
+  def initialize( portClient, portTelnet)
+    @server = TCPServer.open portClient
+    @telnet = TCPServer.open portTelnet
     @leituras = LeiturasDAO.new
     @users = UsersDAO.new
+
+    puts "Server listening clients on #{portClient}"
+    puts "Server listening telnet on #{portTelnet}"
   end
 
-  def start()
-
+  def start
+    # disponibilizar conexao para os clientes
     Thread.new{
       loop do
         Thread.start( @server.accept ) do  | client |
-
           worker = ClientWorker.new( client )
           worker.run
-
         end
       end
     }
-    display_Menu
+
+    # disponibilizar as queries pedidas
+    loop{
+      Thread.start( @telnet.accept ) do  | client |
+        menu = Menu.new(client, client)
+        menu.display_Menu ([method(:listarOnline), method(:listarSensorClient)])
+      end
+    }
   end
 
-
   def listarOnline
-    Menu.displayAllOnline( @users.getAllOn )
+    return @users.getAllOn
   end
 
   def listarSensorClient( id )
-    Menu.displayLeiturasSensor( @leituras.getAllById( id ) )
-  end
-
-  def display_Menu
-    loop {
-      case Menu.menu_geral
-
-      when @@optionListarOnline
-          listarOnline
-
-        when @@optionListarSensor
-          listarSensorClient( Menu.requestID )
-
-        when @@optionSair
-          break
-
-        else
-          Menu.errorComand
-      end
-    }
+    return @leituras.getAllById( id )
   end
 
 end
 
-s = Server.new 12346
-s.start
+
+if __FILE__ == $PROGRAM_NAME
+  s = Server.new ARGV[0], ARGV[1]
+  s.start
+end
