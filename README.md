@@ -8,7 +8,7 @@ ruby AppAmbiental/server/Server.rb $portClient $portTelnet
 ### Server interface
 
 ```
-telnet hostname 8080
+telnet $hostname $portTelnet
 ```
 
 ## Run Client
