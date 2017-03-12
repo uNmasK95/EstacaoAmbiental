@@ -9,8 +9,8 @@ class Client
     @hostname = hostname
     @port = port
     @id = id
-    @latitude = rand(-90.0..90.0)
-    @longitude = rand(-180.0..180)
+    @latitude = rand(-90.0..90.0).round(4)
+    @longitude = rand(-180.0..180).round(4)
     super()
   end
 
