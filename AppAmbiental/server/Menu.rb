@@ -37,7 +37,6 @@ class Menu
     return id
   end
 
-
   def errorComand
     @output.puts "Comando nao existe"
   end

@@ -36,14 +36,14 @@ class ClientWorker
   def receiveFristPack
     fields = @client.gets.strip.split(";")
     @frist_timestamp = fields[2].to_i
-    updateSaveData( @id, fields[0], fields[1].to_f, fields[2].to_i, fields[3].to_f, fields[4].to_f )
+    updateSaveData( @id, fields[0], fields[1].to_f.round(2), fields[2].to_i, fields[3].to_f.round(4), fields[4].to_f.round(4) )
   end
 
   def receiveData
     receiveFristPack
     loop {
       fields = @client.gets.strip.split(";")
-      updateSaveData( @id, fields[0], fields[1].to_f, fields[2].to_i, fields[3].to_f, fields[4].to_f )
+      updateSaveData( @id, fields[0], fields[1].to_f.round(2), fields[2].to_i, fields[3].to_f.round(4), fields[4].to_f.round(4) )
     }
   end
 
