@@ -16,25 +16,30 @@ class Client
 
   def start
 
-    socket = TCPSocket.open(@hostname, @port)
+    begin
+      socket = TCPSocket.open(@hostname, @port)
 
-    socket.puts("#{@id}")
+      socket.puts("#{@id}")
 
-    puts "Client ID: #{socket.gets}"
+      puts "Client ID: #{socket.gets}"
 
-    Thread.new{
-      loop do
-        socket.write("ruido;#{getRuido};#{Time.now.to_i};#{@latitude};#{@longitude}\n")
-        sleep(1)
-      end
-    }
+      Thread.new{
+        loop do
+          socket.write("ruido;#{getRuido};#{Time.now.to_i};#{@latitude};#{@longitude}\n")
+          sleep(1)
+        end
+      }
 
-    Thread.new {
-      loop do
-        socket.write("temperatura;#{getTemperatura};#{Time.now.to_i};#{@latitude};#{@longitude}\n")
-        sleep(30)
-      end
-    }.join
+      Thread.new {
+        loop do
+          socket.write("temperatura;#{getTemperatura};#{Time.now.to_i};#{@latitude};#{@longitude}\n")
+          sleep(30)
+        end
+      }.join
+
+    rescue Errno::ECONNREFUSED
+      puts "No connection to server"
+    end
 
   end
 
