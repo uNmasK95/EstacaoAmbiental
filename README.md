@@ -14,5 +14,5 @@ telnet $hostname $portTelnet
 ## Run Client
 
 ```
-ruby AppAmbiental/client/Client.rb $ID
+ruby AppAmbiental/client/Client.rb $hostname $port $ID
 ```

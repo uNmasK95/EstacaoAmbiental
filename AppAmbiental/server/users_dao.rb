@@ -35,6 +35,10 @@ class UsersDAO
     @db[:users].update_one( {:_id => id } , :$set => { :state => state } )
   end
 
+  def updateAllState( state )
+    @db[:users].update_many({}, :$set => { :state => state } )
+  end
+
   def updateGPS( id, gps_lat, gps_lon )
     @db[:users].update_one( {:_id => id } ,
       :$set => {

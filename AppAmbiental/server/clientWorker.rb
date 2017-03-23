@@ -12,24 +12,19 @@ class ClientWorker
   end
 
   def handshake
-    begin
-      id = @client.gets.to_i
+    id = @client.gets.to_i
 
-      if @users.containsUser(id) then
-        @id = id
-        @users.updateState(@id,"ON")
-        @client.puts "#{@id}"
-      else
-        @id = @users.countUsers+1
-        @users.insert(@id,-1,-1,"ON")
-        @client.puts "#{@id}"
-      end
-
-      $stdout.puts "O client xdk com o id: #{@id} estabeleceu conexao"
-    rescue IOError
-      #TODO ver o que fazer aqui
-      #Thread.current[:stop] = true
+    if @users.containsUser(id) then
+      @id = id
+      @users.updateState(@id,"ON")
+      @client.puts "#{@id}"
+    else
+      @id = @users.countUsers+1
+      @users.insert(@id,-1,-1,"ON")
+      @client.puts "#{@id}"
     end
+
+    $stdout.puts "O client xdk com o id: #{@id} estabeleceu conexao"
   end
 
 

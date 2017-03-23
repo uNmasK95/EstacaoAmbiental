@@ -17,6 +17,7 @@ class Server
   end
 
   def start
+    @users.updateAllState("OFF")
     # disponibilizar conexao para os clientes
     Thread.new{
       loop do
