@@ -41,6 +41,8 @@ class Client
 
     rescue Errno::ECONNREFUSED
       puts "No connection to server"
+    rescue Interrupt
+      puts "\nOFF"
     end
 
   end
