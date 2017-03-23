@@ -5,12 +5,14 @@ class Client
 
   include XdkSensor
 
-  def initialize( hostname, port, id)
+  def initialize( hostname, port, id, latitude, longitude)
     @hostname = hostname
     @port = port
     @id = id
-    @latitude = rand(-90.0..90.0)
-    @longitude = rand(-180.0..180)
+    @latitude = latitude
+    @longitude = longitude
+    #@latitude = rand(-90.0..90.0)
+    #@longitude = rand(-180.0..180)
     super()
   end
 
@@ -49,7 +51,7 @@ end
 
 if __FILE__ == $PROGRAM_NAME
 
-  c = Client.new ARGV[0], ARGV[1].to_i, ARGV[2]
+  c = Client.new ARGV[0], ARGV[1].to_i, ARGV[2], ARGV[3], ARGV[4]
   c.start
 
 end
